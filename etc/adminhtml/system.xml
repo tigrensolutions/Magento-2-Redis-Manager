@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="tigren" translate="label" sortOrder="10">
+            <label>Tigren</label>
+        </tab>
+        <section id="redismanager" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
+            <class>separator-top</class>
+            <label>Redis Manager</label>
+            <tab>tigren</tab>
+            <resource>Tigren_RedisManager::config</resource>
+            <group id="setting" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Settings</label>
+                <field id="syncflush" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0"
+                       showInStore="0">
+                    <label>Synchronize with Magento cache flushes</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="manual_config" translate="label" type="select" sortOrder="2" showInDefault="1"
+                       showInWebsite="0" showInStore="0">
+                    <label>Manual Configuration</label>
+                    <frontend_model>Tigren\RedisManager\Block\Adminhtml\Form\Field\ManualConfiguration</frontend_model>
+                    <backend_model>Tigren\RedisManager\Config\Backend\AdditionalRedis</backend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

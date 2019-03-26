@@ -1,0 +1,105 @@
+<?php
+/**
+ * @var Tigren\RedisManager\Block\Adminhtml\Grid $this
+ */
+$_session = $this->getSessionData();
+$_services = $this->getCacheData();
+
+?>
+<div class="redismanager">
+    <form action="<?php echo $this->getUrl('*/*/flushDb') ?>" method="post" id="redisServices">
+        <button id="flushAll"
+                title="<?php echo $this->escapeHtml(__('Flush Redis Cache')) ?>"
+                type="button"
+                class="scalable delete right"
+                onclick="window.location = '<?php
+                echo $this->getUrl('*/*/flushAll'
+                    , array(
+                    '_query' => array(
+                        'port' => $_session['redis']['port']
+                    )
+                )
+                )
+                ?>'; return false;"><span><?php echo $this->escapeHtml(__('Flush Redis Cache')) ?></span>
+        </button>
+        <br/>
+        <input name="form_key" type="hidden" value="<?php ?>"/>
+        <table cellspacing="0" cellpadding="0" class="services">
+            <col width="15"/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col/>
+            <col width="80"/>
+            <thead>
+            <tr>
+                <th><?php echo $this->escapeHtml(__('Cache Type')) ?></th>
+                <th><?php echo $this->escapeHtml(__('Name')) ?></th>
+                <th><?php echo $this->escapeHtml(__('Server')) ?></th>
+                <th><?php echo $this->escapeHtml(__('Port')) ?></th>
+                <th><?php echo $this->escapeHtml(__('Database')) ?></th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if (count($_services) || count($_session) && isset($_session['redis']) || isset($_services)): ?>
+                <?php if (isset($_session['redis'], $_session['redis']['host'], $_session['redis']['port'], $_session['redis']['database'])): ?>
+                    <tr>
+                        <td><?php echo $this->escapeHtml(__("session")) ?></td>
+                        <td><?php echo $_session['save'] ?></td>
+                        <td><?php echo $_session['redis']['host'] ?></td>
+                        <td><?php echo $_session['redis']['port'] ?></td>
+                        <td><?php echo $_session['redis']['database'] ?></td>
+                        <td onclick="return false">
+                            <button class="delete" onclick="window.location = '<?php
+                            echo $this->getUrl('*/*/flushSession', array(
+                                '_query' => array(
+                                    'server' => $_session['redis']['host'],
+                                    'database' => $_session['redis']['database']
+                                )
+                            ))
+                            ?>//'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                <?php if (isset($_services)): ?>
+                    <?php foreach ($_services as $key => $value): ?>
+                        <?php if (isset($value['backend'], $value['backend_options'], $value['backend_options']['server'], $value['backend_options']['port'], $value['backend_options']['database'])) : ?>
+                            <tr>
+                                <td><?php echo $key ?></td>
+                                <td><?php echo $value['backend'] ?></td>
+                                <td><?php echo $value['backend_options']['server'] ?></td>
+                                <td><?php echo $value['backend_options']['port'] ?></td>
+                                <td><?php echo $value['backend_options']['database'] ?></td>
+                                <td onclick="return false">
+                                    <button class="delete" onclick="window.location = '<?php
+                                    echo $this->getUrl('*/*/flushCache', array(
+                                        '_query' => array(
+                                            'server' => $value['backend_options']['server'],
+                                            'database' => $value['backend_options']['database']
+                                        )
+                                    ))
+                                    ?>//'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            <?php else: ?>
+                <tr>
+                    <td class="empty-text a-center"
+                        colspan="100"><?php echo $this->escapeHtml(__('No Redis services were found.')) ?></td>
+                </tr>
+            <?php endif ?>
+            </tbody>
+        </table>
+    </form>
+</div>
