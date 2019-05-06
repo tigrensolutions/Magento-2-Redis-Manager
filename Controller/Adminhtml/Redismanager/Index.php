@@ -1,13 +1,13 @@
 <?php
 
-namespace Tigren\RedisManager\Controller\Adminhtml\RedisManager;
+namespace Tigren\RedisManager\Controller\Adminhtml\Redismanager;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\View\Result\PageFactory;
 
 /**
  * Class Index
- * @package Tigren\RedisManager\Controller\Adminhtml\RedisManager
+ * @package Tigren\RedisManager\Controller\Adminhtml\Redismanager
  */
 class Index extends Action
 {

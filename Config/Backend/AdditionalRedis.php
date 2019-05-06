@@ -63,8 +63,7 @@ class AdditionalRedis extends Value
         WriteFactory $writeFactory,
         array $data = [],
         Json $serializer = null
-    )
-    {
+    ) {
         $this->directoryList = $directoryList;
         $this->write = $writeFactory->create(BP);
         $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
@@ -103,7 +102,6 @@ class AdditionalRedis extends Value
 
             if (!empty($value) && is_array($value)) {
                 foreach ($value as $cacheData) {
-                    
                     if (isset($cacheData['cache_type']) && isset($cacheData['server'])
                         && isset($cacheData['database']) && isset($cacheData['port'])) {
                         switch ($cacheData['cache_type']) {
@@ -175,7 +173,7 @@ class AdditionalRedis extends Value
             }
 
             if (!$hasPageCacheData && isset($envData['cache']['frontend']['page_cache'])) {
-                unset($envData['cache']['frontend']['default']);
+                unset($envData['cache']['frontend']['page_cache']);
             }
 
             if (!$hasSessionData) {
@@ -209,6 +207,9 @@ class AdditionalRedis extends Value
      * Process data after load
      *
      * @return $this
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\ValidatorException
+     * @throws \Exception
      */
     public function afterLoad()
     {
@@ -219,6 +220,52 @@ class AdditionalRedis extends Value
                 $this->setValue($value);
             }
         }
+
+        $value = $this->getValue();
+        if (empty($value)) {
+            $envPath = $this->getEnvPath();
+            if ($this->write->isReadable($this->write->getRelativePath($envPath))) {
+                $newValue = [];
+                $envData = include $envPath;
+
+                if (isset($envData['session']['save'])
+                    && $envData['session']['save'] === 'redis'
+                    && isset($envData['session']['redis'])) {
+                    $newValue[] = [
+                        'cache_type' => 'session',
+                        'server' => $envData['session']['redis']['host'],
+                        'port' => $envData['session']['redis']['port'],
+                        'database' => $envData['session']['redis']['database'],
+                        'password' => $envData['session']['redis']['password']
+                    ];
+                }
+
+                if (isset($envData['cache']['frontend']['default']['backend'])
+                    && isset($envData['cache']['frontend']['default']['backend']) == 'Cm_Cache_Backend_Redis') {
+                    $newValue[] = [
+                        'cache_type' => 'default',
+                        'server' => $envData['cache']['frontend']['default']['backend_options']['server'],
+                        'port' => $envData['cache']['frontend']['default']['backend_options']['port'],
+                        'database' => $envData['cache']['frontend']['default']['backend_options']['database'],
+                        'password' => $envData['cache']['frontend']['default']['backend_options']['password']
+                    ];
+                }
+
+                if (isset($envData['cache']['frontend']['page_cache']['backend'])
+                    && isset($envData['cache']['frontend']['page_cache']['backend']) == 'Cm_Cache_Backend_Redis') {
+                    $newValue[] = [
+                        'cache_type' => 'page_cache',
+                        'server' => $envData['cache']['frontend']['page_cache']['backend_options']['server'],
+                        'port' => $envData['cache']['frontend']['page_cache']['backend_options']['port'],
+                        'database' => $envData['cache']['frontend']['page_cache']['backend_options']['database'],
+                        'password' => $envData['cache']['frontend']['page_cache']['backend_options']['password']
+                    ];
+                }
+
+                $this->setValue($newValue);
+            }
+        }
+
         return $this;
     }
 }

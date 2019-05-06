@@ -4,24 +4,22 @@
  */
 $_session = $this->getSessionData();
 $_services = $this->getCacheData();
-
 ?>
 <div class="redismanager">
     <form action="<?php echo $this->getUrl('*/*/flushDb') ?>" method="post" id="redisServices">
+        <?php if (!empty($_session['redis'])
+            || (!empty($_services['default']['backend'] && $_services['default']['backend'] == 'Cm_Cache_Backend_Redis'))
+            || (!empty($_services['page_cache']['backend'] && $_services['page_cache']['backend'] == 'Cm_Cache_Backend_Redis'))
+        ): ?>
         <button id="flushAll"
-                title="<?php echo $this->escapeHtml(__('Flush Redis Cache')) ?>"
+                title="<?php echo $this->escapeHtml(__('Flush All')) ?>"
                 type="button"
                 class="scalable delete right"
                 onclick="window.location = '<?php
-                echo $this->getUrl('*/*/flushAll'
-                    , array(
-                    '_query' => array(
-                        'port' => $_session['redis']['port']
-                    )
-                )
-                )
-                ?>'; return false;"><span><?php echo $this->escapeHtml(__('Flush Redis Cache')) ?></span>
+                echo $this->getUrl('*/*/flushAll')
+                ?>'; return false;"><span><?php echo $this->escapeHtml(__('Flush All')) ?></span>
         </button>
+        <?php endif; ?>
         <br/>
         <input name="form_key" type="hidden" value="<?php ?>"/>
         <table cellspacing="0" cellpadding="0" class="services">
@@ -59,34 +57,28 @@ $_services = $this->getCacheData();
                         <td onclick="return false">
                             <button class="delete" onclick="window.location = '<?php
                             echo $this->getUrl('*/*/flushSession', array(
-                                '_query' => array(
-                                    'server' => $_session['redis']['host'],
-                                    'database' => $_session['redis']['database']
-                                )
+                                '_query' => $_session['redis']
                             ))
-                            ?>//'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
+                            ?>'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
                             </button>
                         </td>
                     </tr>
                 <?php endif; ?>
                 <?php if (isset($_services)): ?>
-                    <?php foreach ($_services as $key => $value): ?>
-                        <?php if (isset($value['backend'], $value['backend_options'], $value['backend_options']['server'], $value['backend_options']['port'], $value['backend_options']['database'])) : ?>
+                    <?php foreach ($_services as $key => $service): ?>
+                        <?php if (isset($service['backend'], $service['backend_options'], $service['backend_options']['server'], $service['backend_options']['port'], $service['backend_options']['database'])) : ?>
                             <tr>
                                 <td><?php echo $key ?></td>
-                                <td><?php echo $value['backend'] ?></td>
-                                <td><?php echo $value['backend_options']['server'] ?></td>
-                                <td><?php echo $value['backend_options']['port'] ?></td>
-                                <td><?php echo $value['backend_options']['database'] ?></td>
+                                <td><?php echo $service['backend'] ?></td>
+                                <td><?php echo $service['backend_options']['server'] ?></td>
+                                <td><?php echo $service['backend_options']['port'] ?></td>
+                                <td><?php echo $service['backend_options']['database'] ?></td>
                                 <td onclick="return false">
                                     <button class="delete" onclick="window.location = '<?php
                                     echo $this->getUrl('*/*/flushCache', array(
-                                        '_query' => array(
-                                            'server' => $value['backend_options']['server'],
-                                            'database' => $value['backend_options']['database']
-                                        )
+                                        '_query' => $service['backend_options']
                                     ))
-                                    ?>//'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
+                                    ?>'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
                                     </button>
                                 </td>
                             </tr>

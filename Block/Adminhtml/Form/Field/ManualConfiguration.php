@@ -1,4 +1,5 @@
 <?php
+
 namespace Tigren\RedisManager\Block\Adminhtml\Form\Field;
 
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
@@ -16,6 +17,56 @@ class ManualConfiguration extends AbstractFieldArray
     protected $cacheType = null;
 
     /**
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function _prepareToRender()
+    {
+        $this->addColumn(
+            'cache_type',
+            [
+                'label' => __('Cache Type'),
+                'style' => 'width:150px',
+                'unique' => true,
+                'renderer' => $this->getCacheTypeRenderer(),
+            ]
+        );
+        $this->addColumn(
+            'server',
+            [
+                'label' => __('Host'),
+                'style' => 'width:100px',
+                'class' => 'required-entry',
+            ]
+        );
+        $this->addColumn(
+            'database',
+            [
+                'label' => __('Database'),
+                'style' => 'width:100px',
+                'class' => 'required-entry'
+            ]
+        );
+        $this->addColumn(
+            'port',
+            [
+                'label' => __('Port'),
+                'style' => 'width:100px',
+                'class' => 'required-entry',
+            ]
+        );
+        $this->addColumn(
+            'password',
+            [
+                'label' => __('Password'),
+                'style' => 'width:100px'
+            ]
+        );
+
+        $this->_addAfter = false;
+        $this->_addButtonLabel = __('Add');
+    }
+
+    /**
      * @return CacheType
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -29,56 +80,6 @@ class ManualConfiguration extends AbstractFieldArray
             );
         }
         return $this->cacheType;
-    }
-
-    /**
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    protected function _prepareToRender()
-    {
-        $this->addColumn(
-            'cache_type',
-            [
-                'label'     => __('Cache Type'),
-                'style' => 'width:150px',
-                'unique' => true,
-                'renderer'  => $this->getCacheTypeRenderer(),
-            ]
-        );
-        $this->addColumn(
-            'server',
-            [
-                'label'     => __('Host'),
-                'style' => 'width:100px',
-                'class' => 'required-entry',
-            ]
-        );
-        $this->addColumn(
-            'database',
-            [
-                'label'     => __('Database'),
-                'style' => 'width:100px',
-                'class' => 'required-entry'
-            ]
-        );
-        $this->addColumn(
-            'port',
-            [
-                'label'     => __('Port'),
-                'style' => 'width:100px',
-                'class' => 'required-entry',
-            ]
-        );
-        $this->addColumn(
-            'password',
-            [
-                'label'     => __('Password'),
-                'style' => 'width:100px'
-            ]
-        );
-
-        $this->_addAfter = false;
-        $this->_addButtonLabel = __('Add');
     }
 
     /**

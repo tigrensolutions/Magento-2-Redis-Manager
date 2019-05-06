@@ -1,8 +1,9 @@
 <?php
+
 namespace Tigren\RedisManager\Block\Adminhtml\Form\Field;
 
-use Magento\Framework\View\Element\Html\Select;
 use Magento\Framework\View\Element\Context;
+use Magento\Framework\View\Element\Html\Select;
 
 /**
  * Class CacheType
@@ -25,10 +26,20 @@ class CacheType extends Select
         \Tigren\RedisManager\Model\Config\CacheType $cacheType,
         Context $context,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->cacheType = $cacheType;
+    }
+
+    /**
+     * Sets name for input element
+     *
+     * @param string $value
+     * @return $this
+     */
+    public function setInputName($value)
+    {
+        return $this->setName($value);
     }
 
     /**
@@ -42,16 +53,5 @@ class CacheType extends Select
             $this->setOptions($this->cacheType->toOptionArray());
         }
         return parent::_toHtml();
-    }
-
-    /**
-     * Sets name for input element
-     *
-     * @param string $value
-     * @return $this
-     */
-    public function setInputName($value)
-    {
-        return $this->setName($value);
     }
 }

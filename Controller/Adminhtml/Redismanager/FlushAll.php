@@ -1,117 +1,54 @@
 <?php
 
-namespace Tigren\RedisManager\Controller\Adminhtml\RedisManager;
-
-use Magento\Backend\App\Action;
+namespace Tigren\RedisManager\Controller\Adminhtml\Redismanager;
 
 /**
  * Class FlushAll
- * @package Tigren\RedisManager\Controller\Adminhtml\RedisManager
+ * @package Tigren\RedisManager\Controller\Adminhtml\Redismanager
  */
-class FlushAll extends \Magento\Backend\App\Action
+class FlushAll extends FlushAbstract
 {
-    /**
-     * @var \Magento\Framework\App\Cache\Frontend\Pool
-     */
-    protected $_cacheFrontendPool;
-
-    /**
-     * @var \Magento\Framework\Message\ManagerInterface
-     */
-    protected $messageManager;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $_scopeConfig;
-
-    /**
-     * FlushAll constructor.
-     * @param Action\Context $context
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool
-     */
-    public function __construct(
-        Action\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool
-    ) {
-        parent::__construct($context);
-        $this->_scopeConfig = $scopeConfig;
-        $this->messageManager = $context->getMessageManager();
-        $this->_cacheFrontendPool = $cacheFrontendPool;
-    }
-
     /**
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-        if ($this->getScopeConfig('redismanager/setting/syncflush')) {
-            $flushThis = $this->getRequest()->getParams();
-            if (!empty($flushThis['port']) && $flushThis['port'] == 0 || $flushThis['port'] != "") {
-                $port = $flushThis['port'];
-                $commands = 'redis-cli -p ' . $port . ' flushall';
-                $this->runCleanCache();
-                exec($commands, $output, $return);
-                if ($output = "OK") {
-                    $this->messageManager->addSuccessMessage('The Redis cache and Magento Cache has been flushed all.');
-                } else {
-                    $this->messageManager->addErrorMessage('The Redis cache and Magento Cache not flushed all');
-                }
-            } else {
-                $commands = 'redis-cli FLUSHALL';
-                $this->runCleanCache();
-                exec($commands, $output, $return);
-                if ($output = "OK") {
-                    $this->messageManager->addSuccessMessage('The Redis cache and Magento Cache has been flushed all.');
-                } else {
-                    $this->messageManager->addErrorMessage('The Redis cache and Magento Cache not flushed all');
-                }
-            }
-            return $this->_redirect('redismanager/redismanager');
+        if (!extension_loaded('redis')) {
+            $this->messageManager->addErrorMessage('The Redis extension is not loaded.');
         } else {
-            $flushThis = $this->getRequest()->getParams();
-            if (!empty($flushThis['port']) && $flushThis['port'] == 0 || $flushThis['port'] != "") {
-                $port = $flushThis['port'];
-                $commands = 'redis-cli -p ' . $port . ' flushall';
-                exec($commands, $output, $return);
-                if ($output = "OK") {
-                    $this->messageManager->addSuccessMessage('The Redis cache has been flushed all.');
-                } else {
-                    $this->messageManager->addErrorMessage('The Redis cache not flushed all');
-                }
-            } else {
-                $commands = 'redis-cli FLUSHALL';
-                exec($commands, $output, $return);
-                if ($output = "OK") {
-                    $this->messageManager->addSuccessMessage('The Redis cache has been flushed all.');
-                } else {
-                    $this->messageManager->addErrorMessage('The Redis cache not flushed all');
-                }
+            $session = $this->deploymentConfig->get('session');
+            $caches = $this->deploymentConfig->get('cache/frontend');
+            $redisInstances = [];
+
+            if (!empty($session['redis'])) {
+                $redisInstances[] = $this->_getRedisInstance($session['redis'], true);
             }
-            return $this->_redirect('redismanager/redismanager');
-        }
-    }
 
-    /**
-     * @param $path
-     * @return mixed
-     */
-    public function getScopeConfig($path)
-    {
-        return $this->_scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-    }
+            if ($caches['default']['backend'] && $caches['default']['backend'] == 'Cm_Cache_Backend_Redis') {
+                $redisInstances[] = $this->_getRedisInstance($caches['default']['backend_options']);
+            }
 
-    /**
-     * @return mixed
-     */
-    public function runCleanCache()
-    {
-        foreach ($this->_cacheFrontendPool as $cacheFrontend) {
-            $cacheFrontend->getBackend()->clean();
-            $cacheFrontend->clean();
+            if ($caches['page_cache']['backend'] && $caches['page_cache']['backend'] == 'Cm_Cache_Backend_Redis') {
+                $redisInstances[] = $this->_getRedisInstance($caches['page_cache']['backend_options']);
+            }
+
+            if (!empty($redisInstances)) {
+                foreach ($redisInstances as $redisInstance) {
+                    try {
+                        $redisInstance->flushDB();
+                    } catch (\Exception $e) {
+                        // do something here
+                    }
+                }
+                if ($this->getScopeConfig('redismanager/setting/syncflush')) {
+                    $this->runCleanCache();
+                }
+                $this->messageManager->addSuccessMessage('The Redis Cache and Magento Cache have been flushed.');
+            } else {
+                $this->messageManager->addSuccessMessage('The Redis Cache and Magento Cache were not flushed.');
+            }
         }
-        return true;
+
+        return $this->_redirect('redismanager/redismanager');
     }
 }
