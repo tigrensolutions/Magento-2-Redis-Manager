@@ -1,97 +1,176 @@
 <?php
 /**
- * @var Tigren\RedisManager\Block\Adminhtml\Grid $this
+ * @copyright Copyright (c) 2019 www.tigren.com
+ *
+ * @var Tigren\RedisManager\Helper\Data $redisManagerHelper
+ * @var Tigren\RedisManager\Block\Adminhtml\Grid $block
  */
-$_session = $this->getSessionData();
-$_services = $this->getCacheData();
+$redisManagerHelper = $this->helper('Tigren\RedisManager\Helper\Data');
+$_services = $redisManagerHelper->getSortedAllServices();
 ?>
-<div class="redismanager">
-    <form action="<?php echo $this->getUrl('*/*/flushDb') ?>" method="post" id="redisServices">
-        <?php if (!empty($_session['redis'])
-            || (!empty($_services['default']['backend'] && $_services['default']['backend'] == 'Cm_Cache_Backend_Redis'))
-            || (!empty($_services['page_cache']['backend'] && $_services['page_cache']['backend'] == 'Cm_Cache_Backend_Redis'))
-        ): ?>
-        <button id="flushAll"
-                title="<?php echo $this->escapeHtml(__('Flush All')) ?>"
-                type="button"
-                class="scalable delete right"
-                onclick="window.location = '<?php
-                echo $this->getUrl('*/*/flushAll')
-                ?>'; return false;"><span><?php echo $this->escapeHtml(__('Flush All')) ?></span>
-        </button>
-        <?php endif; ?>
-        <br/>
-        <input name="form_key" type="hidden" value="<?php ?>"/>
-        <table cellspacing="0" cellpadding="0" class="services">
-            <col width="15"/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col/>
-            <col width="80"/>
-            <thead>
-            <tr>
-                <th><?php echo $this->escapeHtml(__('Cache Type')) ?></th>
-                <th><?php echo $this->escapeHtml(__('Name')) ?></th>
-                <th><?php echo $this->escapeHtml(__('Server')) ?></th>
-                <th><?php echo $this->escapeHtml(__('Port')) ?></th>
-                <th><?php echo $this->escapeHtml(__('Database')) ?></th>
-                <th>&nbsp;</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php if (count($_services) || count($_session) && isset($_session['redis']) || isset($_services)): ?>
-                <?php if (isset($_session['redis'], $_session['redis']['host'], $_session['redis']['port'], $_session['redis']['database'])): ?>
-                    <tr>
-                        <td><?php echo $this->escapeHtml(__("session")) ?></td>
-                        <td><?php echo $_session['save'] ?></td>
-                        <td><?php echo $_session['redis']['host'] ?></td>
-                        <td><?php echo $_session['redis']['port'] ?></td>
-                        <td><?php echo $_session['redis']['database'] ?></td>
-                        <td onclick="return false">
-                            <button class="delete" onclick="window.location = '<?php
-                            echo $this->getUrl('*/*/flushSession', array(
-                                '_query' => $_session['redis']
-                            ))
-                            ?>'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
-                            </button>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-                <?php if (isset($_services)): ?>
-                    <?php foreach ($_services as $key => $service): ?>
-                        <?php if (isset($service['backend'], $service['backend_options'], $service['backend_options']['server'], $service['backend_options']['port'], $service['backend_options']['database'])) : ?>
+<div class="redismanager manager">
+    <div id="redismanager-grid">
+        <button id="flushAll" title="<?php echo __('Flush All') ?>" type="button" class="scalable delete right"
+                onclick="window.location = <?php echo $block->getUrl('*/*/flushAll') ?> '">
+            <span><?php echo __('Flush All') ?></span></button>
+        <div class="content-header">
+            <h3><?php echo __('Databases') ?></h3>
+        </div>
+        <form action="#" method="post" id="redisServices" class="redismanager">
+            <input name="form_key" value="<?= $block->getFormKey() ?>" type="hidden"/>
+            <table cellspacing="0" cellpadding="0" class="services">
+                <col width="15"/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col width="80"/>
+                <thead>
+                <tr>
+                    <th><?php echo __('Host') ?></th>
+                    <th><?php echo __('Port') ?></th>
+                    <th><?php echo __('Uptime') ?></th>
+                    <th><?php echo __('Connections') ?></th>
+                    <th><?php echo __('Memory / Peak') ?></th>
+                    <th><?php echo __('Role') ?></th>
+                    <th><?php echo __('Last Save') ?></th>
+                    <th colspan="3"><?php echo __('Details') ?></th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php if (count($_services)): ?>
+                    <?php foreach ($_services as $_server => $_service): ?>
+                        <tr>
+                            <td><?php echo $_service['server'] ?></td>
+                            <td><?php echo $_service['port'] ?></td>
+                            <td><?php echo $_service['uptime'] ?></td>
+                            <td><?php echo $_service['connections'] ?></td>
+                            <td><?php echo $_service['memory'] ?></td>
+                            <td><?php echo $_service['role'] ?></td>
+                            <td><?php echo $_service['lastsave'] ?></td>
+                            <td colspan="3">&nbsp;</td>
+                            <td onclick="return false">
+                                <button class="delete" onclick="window.location = '<?php
+                                echo $block->getUrl('*/*/flushAll', [
+                                    '_query' => [
+                                        'server' => $_server
+                                    ]
+                                ])
+                                ?>'; return false;"><?php echo __("Flush All") ?></button>
+                            </td>
+                        </tr>
+                        <?php foreach ($_service['services'] as $_id => $_db): ?>
                             <tr>
-                                <td><?php echo $key ?></td>
-                                <td><?php echo $service['backend'] ?></td>
-                                <td><?php echo $service['backend_options']['server'] ?></td>
-                                <td><?php echo $service['backend_options']['port'] ?></td>
-                                <td><?php echo $service['backend_options']['database'] ?></td>
+                                <td colspan="7">&nbsp;</td>
+                                <td>
+                                    <strong><?php echo __('Name') ?>:</strong> <?php echo $_db['name'] ?>
+                                </td>
+                                <td>
+                                    <strong><?php echo __('Database') ?>:</strong> <?php echo $_db['database'] ?>
+                                </td>
+                                <td>
+                                    <strong><?php echo __('Keys') ?>:</strong> <?php echo $_db['keys'] ?>
+                                </td>
                                 <td onclick="return false">
-                                    <button class="delete" onclick="window.location = '<?php
-                                    echo $this->getUrl('*/*/flushCache', array(
-                                        '_query' => $service['backend_options']
-                                    ))
-                                    ?>'; return false;"><?php echo $this->escapeHtml(__("Flush DB")) ?>
-                                    </button>
+                                    <button onclick="window.location = '<?php
+                                    echo $block->getUrl('*/*/flushDb', [
+                                        '_query' => [
+                                            'id' => $_id
+                                        ]
+                                    ])
+                                    ?>'; return false;"><?php echo __("Flush DB") ?></button>
                                 </td>
                             </tr>
-                        <?php endif; ?>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                <?php endif; ?>
-            <?php else: ?>
-                <tr>
-                    <td class="empty-text a-center"
-                        colspan="100"><?php echo $this->escapeHtml(__('No Redis services were found.')) ?></td>
-                </tr>
-            <?php endif ?>
-            </tbody>
-        </table>
-    </form>
+                <?php else: ?>
+                    <tr>
+                        <td class="empty-text a-center"
+                            colspan="100"><?php echo __('No Redis services were found.') ?></td>
+                    </tr>
+                <?php endif ?>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <?php if (count($_services)): ?>
+        <div class="content-header">
+            <h3><?php echo __('Delete Keys') ?></h3>
+        </div>
+        <form id="flushByKey" action="<?php echo $block->getUrl('*/*/flushByKey') ?>" method="post">
+            <input name="form_key" value="<?= $block->getFormKey() ?>" type="hidden"/>
+            <fieldset>
+                <div>
+                    <label for="redisKeys"><?php echo __('Keys (complete or partial, case sensative, one per line):') ?></label>
+                </div>
+                <div class="redisKeySamples">
+                    <p><?php echo __('Examples:') ?></p>
+                    <ul>
+                        <li><a id="redisKeySampleCategory" href="#"
+                               data-keys="CATEGORY"><?php echo __('Categories') ?></a></li>
+                        <li><a id="redisKeySampleProduct" href="#"
+                               data-keys="PRODUCT"><?php echo __('Products') ?></a></li>
+                        <li><a id="redisKeySampleProduct" href="#"
+                               data-keys="BLOCK,CMS,LAYOUT,THEME"><?php echo __('Design & Layout') ?></a></li>
+                        <li><a id="redisKeySampleProduct" href="#"
+                               data-keys="LOCALE,Locale,TRANSLATE"><?php echo __('Locale') ?></a></li>
+                    </ul>
+                    <p style="clear:both">
+                        <em><?php echo __('Keys can also be deleted by using <a href="%1">Cache Management</a>.', $block->getUrl('adminhtml/cache')) ?></em></p>
+                </div>
+                <div>
+                    <textarea id="redisKeys" name="redisKeys"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="action submit primary"><span><?php echo __('Delete Keys') ?></span></button>
+                </div>
+            </fieldset>
+        </form>
+        <script>
+            require(['jquery', 'prototype'], function (jQuery) {
+            // <![CDATA[
+            jQuery('.redisKeySamples a').each(function (key, elm) {
+                elm.on('click', 'a', function () {
+                    $('redisKeys').value = elm.readAttribute('data-keys').replace(/,/g, '\n');
+                });
+            });
+            // ]]>
+            });
+        </script>
+    <?php endif ?>
 </div>
+<script>
+    require(['jquery', 'prototype'], function (jQuery) {
+        //<![CDATA[
+        var redisForm = $('redisServices');
+
+        function redisCheckAll() {
+            redisForm.getElements('checkbox').each(function (box) {
+                box.checked = true;
+            });
+        }
+
+        function redisCheckNone() {
+            redisForm.getElements('checkbox').each(function (box) {
+                box.checked = false;
+            });
+        }
+
+        function redisCheckRow(tr) {
+            var box = tr.getElementsByTagName('input');
+            for (var i = 0; i < box.length; i++) {
+                if (box[i].type === 'checkbox') {
+                    box[i].checked = !box[i].checked;
+                }
+            }
+        }
+        //]]>
+    });
+</script>

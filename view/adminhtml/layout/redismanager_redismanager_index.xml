@@ -1,9 +1,14 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * @copyright Copyright (c) 2019 www.tigren.com
+ */
+-->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-            <block class="Tigren\RedisManager\Block\Adminhtml\Grid" name="tigren_redismanager_grid"
+            <block class="Tigren\RedisManager\Block\Adminhtml\Grid" name="tigren.redismanager.grid"
                    template="grid.phtml"/>
         </referenceContainer>
     </body>

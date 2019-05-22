@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * @copyright Copyright (c) 2019 www.tigren.com
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>

@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * @copyright Copyright (c) 2019 www.tigren.com
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
@@ -11,19 +16,30 @@
             <label>Redis Manager</label>
             <tab>tigren</tab>
             <resource>Tigren_RedisManager::config</resource>
-            <group id="setting" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0"
+            <group id="setting" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="0"
                    showInStore="0">
-                <label>Settings</label>
-                <field id="syncflush" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0"
+                <label>General Settings</label>
+                <field id="auto_detect" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="0"
                        showInStore="0">
-                    <label>Synchronize with Magento cache flushes</label>
+                    <label>Automatically Detect Redis Services</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If No, use manual configuration below.</comment>
                 </field>
-                <field id="manual_config" translate="label" type="select" sortOrder="2" showInDefault="1"
+                <field id="manual_config" translate="label" type="select" sortOrder="10" showInDefault="1"
                        showInWebsite="0" showInStore="0">
                     <label>Manual Configuration</label>
+                    <depends>
+                        <field id="auto_detect">0</field>
+                    </depends>
                     <frontend_model>Tigren\RedisManager\Block\Adminhtml\Form\Field\ManualConfiguration</frontend_model>
                     <backend_model>Tigren\RedisManager\Config\Backend\AdditionalRedis</backend_model>
+                    <comment>When using the synchronized flushes and Redis Session, it is recommended that the Redis Session database is not listed here so that no sessions are lost.</comment>
+                </field>
+                <field id="syncflush" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0"
+                       showInStore="0">
+                    <label>Synchronize with Magento Cache Flushes</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Flush all specified Redis databases whenever Magento fires an adminhtml_cache_flush_system OR adminhtml_cache_flush_all observer event.</comment>
                 </field>
             </group>
         </section>
