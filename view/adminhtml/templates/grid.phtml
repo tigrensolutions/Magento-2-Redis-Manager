@@ -11,7 +11,7 @@ $_services = $redisManagerHelper->getSortedAllServices();
 <div class="redismanager manager">
     <div id="redismanager-grid">
         <button id="flushAll" title="<?php echo __('Flush All') ?>" type="button" class="scalable delete right"
-                onclick="window.location = <?php echo $block->getUrl('*/*/flushAll') ?> '">
+                onclick="window.location = '<?php echo $block->getUrl('*/*/flushAll') ?>'">
             <span><?php echo __('Flush All') ?></span></button>
         <div class="content-header">
             <h3><?php echo __('Databases') ?></h3>
