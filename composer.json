@@ -1,5 +1,5 @@
 {
-    "name": "tigren/module-redis-manager",
+    "name": "tigrensolutions/module-redis-manager",
     "description": "Tigren Redis Manager for Magento 2",
     "require": {
         "php": "~7.0.13|~7.1.0|~7.2.0"

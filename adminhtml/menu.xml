@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @copyright Copyright (c) 2019 www.tigren.com
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Tigren_RedisManager::redismanager" title="Redis Management" module="Tigren_RedisManager"
+             sortOrder="100" action="redismanager/redismanager" resource="Tigren_RedisManager::redismanager"
+             parent="Magento_Backend::system_tools"/>
+    </menu>
+</config>
