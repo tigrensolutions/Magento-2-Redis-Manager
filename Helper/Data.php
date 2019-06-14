@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2019 www.tigren.com
+ * @author    Tigren Solutions <info@tigren.com>
+ * @copyright Copyright (c) 2019 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+ * @license   Open Software License ("OSL") v. 3.0
  */
 
 namespace Tigren\RedisManager\Helper;
@@ -23,16 +25,29 @@ use Zend_Cache_Exception;
 
 /**
  * Class Data
+ *
  * @package Tigren\RedisManager\Helper
  */
 class Data extends AbstractHelper
 {
+    /**
+     *
+     */
     const DEFAULT_MISSING_STRING = 'N/A';
 
+    /**
+     *
+     */
     const XML_PATH_AUTO_DETECT_REDIS_SERVICES = 'redismanager/setting/auto_detect';
 
+    /**
+     *
+     */
     const XML_PATH_SYNC_FLUSH = 'redismanager/setting/syncflush';
 
+    /**
+     *
+     */
     const XML_PATH_MANUAL_CONFIG = 'redismanager/setting/manual_config';
 
     /**
@@ -78,6 +93,7 @@ class Data extends AbstractHelper
 
     /**
      * Data constructor.
+     *
      * @param Context $context
      * @param TimezoneInterface $localeDate
      * @param StoreManagerInterface $storeManager
@@ -204,8 +220,8 @@ class Data extends AbstractHelper
     }
 
     /**
-     * @param $name
-     * @param $redisOptions
+     * @param  $name
+     * @param  $redisOptions
      * @param bool $isSession
      * @return Cm_Cache_Backend_Redis
      */
@@ -255,7 +271,7 @@ class Data extends AbstractHelper
     }
 
     /**
-     * @param $redisOptions
+     * @param  $redisOptions
      * @return Redis
      */
     public function getRedisInstance($redisOptions)
@@ -293,8 +309,8 @@ class Data extends AbstractHelper
      * Get a formatted array of data from the redis info
      *
      * @param array $service
-     * @param $id
-     * @param $client
+     * @param  $id
+     * @param  $client
      * @return array
      */
     protected function _getSortedService(array $service, $id, $client)

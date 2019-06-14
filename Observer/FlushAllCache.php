@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2019 www.tigren.com
+ * @author    Tigren Solutions <info@tigren.com>
+ * @copyright Copyright (c) 2019 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+ * @license   Open Software License ("OSL") v. 3.0
  */
 
 namespace Tigren\RedisManager\Observer;
@@ -11,6 +13,7 @@ use Tigren\RedisManager\Helper\Data;
 
 /**
  * Class FlushAllCache
+ *
  * @package Tigren\RedisManager\Observer
  */
 class FlushAllCache implements ObserverInterface
@@ -31,8 +34,9 @@ class FlushAllCache implements ObserverInterface
 
     /**
      * Flush all redis databases
+     *
      * @param Observer $observer
-     * @return void
+     * @return                                        void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function execute(Observer $observer)

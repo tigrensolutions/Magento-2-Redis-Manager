@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2019 www.tigren.com
+ * @author    Tigren Solutions <info@tigren.com>
+ * @copyright Copyright (c) 2019 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+ * @license   Open Software License ("OSL") v. 3.0
  */
 
 namespace Tigren\RedisManager\Block\Adminhtml\Form\Field;
@@ -9,6 +11,7 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 
 /**
  * Class ManualConfiguration
+ *
  * @package Tigren\RedisManager\Block\Adminhtml\Form\Field
  */
 class ManualConfiguration extends AbstractFieldArray

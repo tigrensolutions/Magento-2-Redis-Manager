@@ -1,9 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2019 www.tigren.com
- *
- * @var Tigren\RedisManager\Helper\Data $redisManagerHelper
- * @var Tigren\RedisManager\Block\Adminhtml\Grid $block
+ * @author    Tigren Solutions <info@tigren.com>
+ * @copyright Copyright (c) 2019 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+ * @license   Open Software License ("OSL") v. 3.0
  */
 $redisManagerHelper = $this->helper('Tigren\RedisManager\Helper\Data');
 $_services = $redisManagerHelper->getSortedAllServices();
@@ -123,25 +122,29 @@ $_services = $redisManagerHelper->getSortedAllServices();
                                data-keys="LOCALE,Locale,TRANSLATE"><?php echo __('Locale') ?></a></li>
                     </ul>
                     <p style="clear:both">
-                        <em><?php echo __('Keys can also be deleted by using <a href="%1">Cache Management</a>.', $block->getUrl('adminhtml/cache')) ?></em></p>
+                        <em><?php echo __(
+                                        'Keys can also be deleted by using <a href="%1">Cache Management</a>.',
+                                $block->getUrl('adminhtml/cache')
+                                    ) ?></em></p>
                 </div>
                 <div>
                     <textarea id="redisKeys" name="redisKeys"></textarea>
                 </div>
                 <div>
-                    <button type="submit" class="action submit primary"><span><?php echo __('Delete Keys') ?></span></button>
+                    <button type="submit" class="action submit primary"><span><?php echo __('Delete Keys') ?></span>
+                    </button>
                 </div>
             </fieldset>
         </form>
         <script>
             require(['jquery', 'prototype'], function (jQuery) {
-            // <![CDATA[
-            jQuery('.redisKeySamples a').each(function (key, elm) {
-                elm.on('click', 'a', function () {
-                    $('redisKeys').value = elm.readAttribute('data-keys').replace(/,/g, '\n');
+                // <![CDATA[
+                jQuery('.redisKeySamples a').each(function (key, elm) {
+                    elm.on('click', 'a', function () {
+                        $('redisKeys').value = elm.readAttribute('data-keys').replace(/,/g, '\n');
+                    });
                 });
-            });
-            // ]]>
+                // ]]>
             });
         </script>
     <?php endif ?>
@@ -171,6 +174,7 @@ $_services = $redisManagerHelper->getSortedAllServices();
                 }
             }
         }
+
         //]]>
     });
 </script>

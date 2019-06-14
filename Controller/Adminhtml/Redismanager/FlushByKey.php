@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2019 www.tigren.com
+ * @author    Tigren Solutions <info@tigren.com>
+ * @copyright Copyright (c) 2019 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+ * @license   Open Software License ("OSL") v. 3.0
  */
 
 namespace Tigren\RedisManager\Controller\Adminhtml\Redismanager;
@@ -10,6 +12,7 @@ use Magento\Framework\Controller\ResultInterface;
 
 /**
  * Class FlushByKey
+ *
  * @package Tigren\RedisManager\Controller\Adminhtml\Redismanager
  */
 class FlushByKey extends FlushAbstract
@@ -40,10 +43,12 @@ class FlushByKey extends FlushAbstract
             }
         }
 
-        $this->messageManager->addSuccess(__(
-            '%1 key(s) cleared',
-            $clearCount
-        ));
+        $this->messageManager->addSuccess(
+            __(
+                '%1 key(s) cleared',
+                $clearCount
+            )
+        );
 
         return $this->_redirect('redismanager/redismanager');
     }

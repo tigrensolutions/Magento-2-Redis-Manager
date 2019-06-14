@@ -1,6 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2019 www.tigren.com
+ * @author    Tigren Solutions <info@tigren.com>
+ * @copyright Copyright (c) 2019 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+ * @license   Open Software License ("OSL") v. 3.0
  */
 
 namespace Tigren\RedisManager\Controller\Adminhtml\Redismanager;
@@ -13,6 +15,7 @@ use Magento\Framework\View\Result\PageFactory;
 
 /**
  * Class Index
+ *
  * @package Tigren\RedisManager\Controller\Adminhtml\Redismanager
  */
 class Index extends Action
@@ -24,6 +27,7 @@ class Index extends Action
 
     /**
      * Index constructor.
+     *
      * @param Action\Context $context
      * @param PageFactory $resultPageFactory
      */
@@ -40,7 +44,11 @@ class Index extends Action
      */
     public function execute()
     {
-        /** @var Page $resultPage */
+        /**
+         *
+         *
+         * @var Page $resultPage
+         */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->prepend(__('Redis Management'));
 
