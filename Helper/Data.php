@@ -107,7 +107,7 @@ class Data extends AbstractHelper
         StoreManagerInterface $storeManager,
         Pool $cacheFrontendPool,
         DeploymentConfig $deploymentConfig,
-        Json $serializer = null
+        Json $serializer
     ) {
         $this->_storeManager = $storeManager;
         $this->_localeDate = $localeDate;
@@ -187,14 +187,14 @@ class Data extends AbstractHelper
                     $this->_services[] = $this->_processRedisOptions(__('Session'), $session['redis'], true);
                 }
 
-                if ($caches['default']['backend'] && $caches['default']['backend'] == 'Magento\Framework\Cache\Backend\Redis') {
+                if (in_array($caches['default']['backend'] && $caches['default']['backend'], ['Magento\Framework\Cache\Backend\Redis', 'Cm_Cache_Backend_Redis'])) {
                     $this->_services[] = $this->_processRedisOptions(
                         __('Cache'),
                         $caches['default']['backend_options']
                     );
                 }
 
-                if ($caches['page_cache']['backend'] && $caches['page_cache']['backend'] == 'Magento\Framework\Cache\Backend\Redis') {
+                if (in_array($caches['page_cache']['backend'] && $caches['page_cache']['backend'], ['Magento\Framework\Cache\Backend\Redis', 'Cm_Cache_Backend_Redis'])) {
                     $this->_services[] = $this->_processRedisOptions(
                         __('Page Cache'),
                         $caches['page_cache']['backend_options']
@@ -227,24 +227,17 @@ class Data extends AbstractHelper
      */
     protected function _processRedisOptions($name, $redisOptions, $isSession = false)
     {
+        $default = [
+            'server' => '127.0.0.1',
+            'port' => 6379,
+            'database' => '',
+            'password' => '',
+            'timeout' => '2.5'
+        ];
         if ($isSession) {
-            $default = [
-                'server' => '127.0.0.1',
-                'port' => 6379,
-                'database' => '',
-                'password' => '',
-                'timeout' => '2.5'
-            ];
             $redisOptions['server'] = !empty($redisOptions['host']) ? $redisOptions['host'] : '';
             $redisOptions = array_merge($default, $redisOptions);
         } else {
-            $default = [
-                'server' => '127.0.0.1',
-                'port' => 6379,
-                'database' => '',
-                'password' => '',
-                'timeout' => '2.5'
-            ];
             $redisOptions = array_merge($default, $redisOptions);
         }
 
