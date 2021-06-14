@@ -187,14 +187,14 @@ class Data extends AbstractHelper
                     $this->_services[] = $this->_processRedisOptions(__('Session'), $session['redis'], true);
                 }
 
-                if ($caches['default']['backend'] && $caches['default']['backend'] == 'Cm_Cache_Backend_Redis') {
+                if ($caches['default']['backend'] && $caches['default']['backend'] == 'Magento\Framework\Cache\Backend\Redis') {
                     $this->_services[] = $this->_processRedisOptions(
                         __('Cache'),
                         $caches['default']['backend_options']
                     );
                 }
 
-                if ($caches['page_cache']['backend'] && $caches['page_cache']['backend'] == 'Cm_Cache_Backend_Redis') {
+                if ($caches['page_cache']['backend'] && $caches['page_cache']['backend'] == 'Magento\Framework\Cache\Backend\Redis') {
                     $this->_services[] = $this->_processRedisOptions(
                         __('Page Cache'),
                         $caches['page_cache']['backend_options']
