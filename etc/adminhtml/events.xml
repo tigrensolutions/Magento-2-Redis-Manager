@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+  ~ @author    Tigren Solutions <info@tigren.com>
+  ~ @copyright Copyright (c) 2022 Tigren Solutions <https://www.tigren.com>. All rights reserved.
+  ~ @license   Open Software License ("OSL") v. 3.0
+  -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="adminhtml_cache_flush_system">
+        <observer name="tigren_redis_manager_flush_system_pagecache"
+                  instance="Tigren\RedisManager\Observer\FlushAllCache" />
+    </event>
+    <event name="adminhtml_cache_flush_all">
+        <observer name="tigren_redis_manager_magento_all_pagecache"
+                  instance="Tigren\RedisManager\Observer\FlushAllCache" />
+    </event>
+</config>

@@ -1,0 +1,29 @@
+{
+    "name": "tigrensolutions/module-redis-manager",
+    "description": "Tigren Redis Manager for Magento 2",
+    "require": {
+        "php": "~5.6.5|7.0.2|7.0.4|~7.0.6|^7.1.0"
+    },
+    "type": "magento2-module",
+    "version": "1.1.2",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "Tigren Team",
+            "email": "support@tigren.com",
+            "homepage": "http://www.tigren.com/",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Tigren\\RedisManager\\": ""
+        }
+    }
+}
