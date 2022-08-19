@@ -19,6 +19,8 @@ class FlushAll extends FlushAbstract
 {
     /**
      * @return ResponseInterface|ResultInterface
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\RuntimeException
      */
     public function execute()
     {

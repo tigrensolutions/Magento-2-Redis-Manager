@@ -122,6 +122,8 @@ class Data extends AbstractHelper
      * Perform a flushAll when sync flush is enabled (for use in the event observers)
      *
      * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\RuntimeException
      */
     public function flushAllByObserver()
     {
@@ -277,6 +279,7 @@ class Data extends AbstractHelper
     /**
      * @param  $redisOptions
      * @return Redis
+     * @throws Zend_Cache_Exception
      */
     public function getRedisInstance($redisOptions)
     {
